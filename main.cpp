@@ -20,6 +20,7 @@ int main()
 		{ "MetaMsg", "Welcome to MetaMsg!" },
 		{ "MetaMsg", "To add Discord, use /discord <token>" },
 		{ "MetaMsg", "To quit the program, use /quit" },
+		{ "MetaMsg", "Note: These commands are only available in this guild." },
 	};
 
 	g_ui.guild = g_meta->system_guild;
