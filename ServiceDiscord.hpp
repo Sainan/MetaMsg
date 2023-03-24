@@ -14,6 +14,7 @@ namespace MetaMsg
 		Channel* log_channel;
 		struct DiscordHeartbeatTask* heartbeater;
 		std::string username;
+		bool is_bot;
 		std::unordered_map<std::string, struct DiscordGuild*> snowflake_map;
 
 		ServiceDiscord(std::string&& token);

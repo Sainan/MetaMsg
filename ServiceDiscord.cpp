@@ -37,6 +37,7 @@ namespace MetaMsg
 				if (type == joaat::hash("READY"))
 				{
 					serv->username = root->asObj().at("d").asObj().at("user").asObj().at("username").asStr();
+					serv->is_bot = root->asObj().at("d").asObj().at("user").asObj().contains("bot");
 
 					for (const auto& guild : root->asObj().at("d").asObj().at("guilds").asArr())
 					{
