@@ -40,87 +40,17 @@ namespace MetaMsg
 
 					for (const auto& guild : root->asObj().at("d").asObj().at("guilds").asArr())
 					{
-						DiscordGuild* g = (DiscordGuild*)serv->addGuild(soup::make_unique<DiscordGuild>(
-							guild.asObj().at("properties").asObj().at("name").asStr()
-						));
-						serv->snowflake_map.emplace(
-							guild.asObj().at("properties").asObj().at("id").asStr(),
-							g
-						);
-						for (const auto& chan : guild.asObj().at("channels").asArr())
+						if (!guild.asObj().contains("properties"))
 						{
-							DiscordChannel* c = (DiscordChannel*)g->addChannel(soup::make_unique<DiscordChannel>(
-								chan.asObj().at("name").asStr(),
-								chan.asObj().at("type").asInt(),
-								chan.asObj().at("position").asInt()
-							));
-							if (chan.asObj().contains("parent_id")
-								&& chan.asObj().at("parent_id").isStr() // Sometimes it's null for some reason...
-								)
-							{
-								c->parent = chan.asObj().at("parent_id").asStr();
-							}
-							g->snowflake_map.emplace(
-								chan.asObj().at("id").asStr(),
-								c
-							);
+							// It may be unavailable, we'll get GUILD_CREATE later.
+							continue;
 						}
-						std::sort(g->channels.begin(), g->channels.end(), [g](const UniquePtr<Channel>& _a, const UniquePtr<Channel>& _b)
-						{
-							DiscordChannel& a = *static_cast<DiscordChannel*>(_a.get());
-							DiscordChannel& b = *static_cast<DiscordChannel*>(_b.get());
-
-							// Get parent positions
-							int a_parent_pos = -1;
-							int b_parent_pos = -1;
-							if (!a.parent.empty())
-							{
-								a_parent_pos = g->snowflake_map.at(a.parent)->position;
-							}
-							if (!b.parent.empty())
-							{
-								b_parent_pos = g->snowflake_map.at(b.parent)->position;
-							}
-
-							// Get group
-							int a_group = a_parent_pos;
-							int b_group = b_parent_pos;
-							if (a.type == 4)
-							{
-								a_group = a.position;
-							}
-							if (b.type == 4)
-							{
-								b_group = b.position;
-							}
-
-							// Compare group
-							if (a_group < b_group)
-							{
-								return true;
-							}
-							if (b_group < a_group)
-							{
-								return false;
-							}
-
-							// Demote voice channels
-							if (a.type != 2
-								&& b.type == 2
-								)
-							{
-								return true;
-							}
-							if (b.type != 2
-								&& a.type == 2
-								)
-							{
-								return false;
-							}
-
-							return a.position < b.position;
-						});
+						serv->processGuildCreate(guild.asObj());
 					}
+				}
+				else if (type == joaat::hash("GUILD_CREATE"))
+				{
+					serv->processGuildCreate(root->asObj().at("d").asObj());
 				}
 				else if (type == joaat::hash("MESSAGE_CREATE"))
 				{
@@ -220,5 +150,89 @@ namespace MetaMsg
 		//addGuild(soup::make_unique<Guild>("Direct Messages"));
 
 		g_sched.add<DiscordInitGatewayTask>(this);
+	}
+
+	void ServiceDiscord::processGuildCreate(const soup::JsonObject& guild)
+	{
+		DiscordGuild* g = (DiscordGuild*)addGuild(soup::make_unique<DiscordGuild>(
+			guild.asObj().at("properties").asObj().at("name").asStr()
+		));
+		snowflake_map.emplace(
+			guild.at("properties").asObj().at("id").asStr(),
+			g
+		);
+		for (const auto& chan : guild.at("channels").asArr())
+		{
+			DiscordChannel* c = (DiscordChannel*)g->addChannel(soup::make_unique<DiscordChannel>(
+				chan.asObj().at("name").asStr(),
+				chan.asObj().at("type").asInt(),
+				chan.asObj().at("position").asInt()
+			));
+			if (chan.asObj().contains("parent_id")
+				&& chan.asObj().at("parent_id").isStr() // Sometimes it's null for some reason...
+				)
+			{
+				c->parent = chan.asObj().at("parent_id").asStr();
+			}
+			g->snowflake_map.emplace(
+				chan.asObj().at("id").asStr(),
+				c
+			);
+		}
+		std::sort(g->channels.begin(), g->channels.end(), [g](const UniquePtr<Channel>& _a, const UniquePtr<Channel>& _b)
+		{
+			DiscordChannel& a = *static_cast<DiscordChannel*>(_a.get());
+			DiscordChannel& b = *static_cast<DiscordChannel*>(_b.get());
+
+			// Get parent positions
+			int a_parent_pos = -1;
+			int b_parent_pos = -1;
+			if (!a.parent.empty())
+			{
+				a_parent_pos = g->snowflake_map.at(a.parent)->position;
+			}
+			if (!b.parent.empty())
+			{
+				b_parent_pos = g->snowflake_map.at(b.parent)->position;
+			}
+
+			// Get group
+			int a_group = a_parent_pos;
+			int b_group = b_parent_pos;
+			if (a.type == 4)
+			{
+				a_group = a.position;
+			}
+			if (b.type == 4)
+			{
+				b_group = b.position;
+			}
+
+			// Compare group
+			if (a_group < b_group)
+			{
+				return true;
+			}
+			if (b_group < a_group)
+			{
+				return false;
+			}
+
+			// Demote voice channels
+			if (a.type != 2
+				&& b.type == 2
+				)
+			{
+				return true;
+			}
+			if (b.type != 2
+				&& a.type == 2
+				)
+			{
+				return false;
+			}
+
+			return a.position < b.position;
+		});
 	}
 }

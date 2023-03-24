@@ -4,6 +4,8 @@
 
 #include <unordered_map>
 
+#include <soup/fwd.hpp>
+
 namespace MetaMsg
 {
 	struct ServiceDiscord : public Service
@@ -15,5 +17,7 @@ namespace MetaMsg
 		std::unordered_map<std::string, struct DiscordGuild*> snowflake_map;
 
 		ServiceDiscord(std::string&& token);
+
+		void processGuildCreate(const soup::JsonObject& guild);
 	};
 }
