@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="Channel.cpp" />
     <ClCompile Include="Guild.cpp" />
+    <ClCompile Include="HttpRequestWrapperTask.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="ServiceDiscord.cpp" />
     <ClCompile Include="ServiceMeta.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="DiscordGuild.hpp" />
     <ClInclude Include="fwd.hpp" />
     <ClInclude Include="Guild.hpp" />
+    <ClInclude Include="HttpRequestWrapperTask.hpp" />
     <ClInclude Include="Message.hpp" />
     <ClInclude Include="ServiceDiscord.hpp" />
     <ClInclude Include="ServiceMeta.hpp" />

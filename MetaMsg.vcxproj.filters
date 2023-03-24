@@ -21,6 +21,7 @@
     <ClCompile Include="Service.cpp">
       <Filter>services</Filter>
     </ClCompile>
+    <ClCompile Include="HttpRequestWrapperTask.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="time.hpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="DiscordChannel.hpp">
       <Filter>services\discord</Filter>
     </ClInclude>
+    <ClInclude Include="HttpRequestWrapperTask.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="services">

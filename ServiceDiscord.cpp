@@ -1,7 +1,5 @@
 #include "ServiceDiscord.hpp"
 
-#include <soup/HttpRequest.hpp>
-#include <soup/HttpRequestTask.hpp>
 #include <soup/joaat.hpp>
 #include <soup/json.hpp>
 #include <soup/JsonArray.hpp>
@@ -9,7 +7,6 @@
 #include <soup/JsonObject.hpp>
 #include <soup/JsonString.hpp>
 #include <soup/netConnectTask.hpp>
-#include <soup/Task.hpp>
 #include <soup/WebSocketConnection.hpp>
 #include <soup/WebSocketMessage.hpp>
 
@@ -17,6 +14,7 @@
 #include "DiscordChannel.hpp"
 #include "DiscordGuild.hpp"
 #include "DiscordHeartbeatTask.hpp"
+#include "HttpRequestWrapperTask.hpp"
 #include "ServiceMeta.hpp"
 
 namespace MetaMsg
@@ -232,26 +230,6 @@ namespace MetaMsg
 		sendRequest("POST", std::move(path), obj);
 	}
 	
-	struct HttpRequestWrapperTask : public Task
-	{
-		const ServiceDiscord* serv;
-		HttpRequestTask hrt;
-
-		HttpRequestWrapperTask(const ServiceDiscord* serv, HttpRequest&& hr)
-			: Task(), serv(serv), hrt(g_sched, std::move(hr))
-		{
-		}
-
-		void onTick() final
-		{
-			if (hrt.tickUntilDone())
-			{
-				serv->log_channel->addMessage(Message{ "HTTP", hrt.res->body });
-				setWorkDone();
-			}
-		}
-	};
-
 	void ServiceDiscord::sendRequest(const char* method, std::string&& path, const soup::JsonObject& obj) const
 	{
 		HttpRequest hr(method, "discord.com", path);
@@ -263,7 +241,7 @@ namespace MetaMsg
 		hr.header_fields.emplace("Content-Type", "application/json");
 		hr.setPayload(obj.encode());
 
-		g_sched.add<HttpRequestWrapperTask>(this, std::move(hr));
+		g_sched.add<HttpRequestWrapperTask>(log_channel, std::move(hr));
 	}
 
 	std::string ServiceDiscord::getAuthorizationValue() const
