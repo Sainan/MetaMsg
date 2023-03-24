@@ -1,6 +1,7 @@
 ﻿#include <soup/console.hpp>
 #include <soup/DummyTask.hpp>
 #include <soup/format.hpp>
+#include <soup/log.hpp>
 #include <soup/MouseButton.hpp>
 #include <soup/Scheduler.hpp>
 #include <soup/Socket.hpp>
@@ -13,6 +14,14 @@
 using namespace MetaMsg;
 using namespace soup;
 
+struct LogSink : public logSink
+{
+	void write(std::string&& message) final
+	{
+		g_meta->log_channel->addMessage(Message{ "LogSink", std::move(message) });
+	}
+};
+
 int main()
 {
 	g_meta = static_cast<ServiceMeta*>(g_services.emplace_back(soup::make_unique<ServiceMeta>()).get());
@@ -22,6 +31,8 @@ int main()
 		{ "MetaMsg", "To quit the program, use /quit" },
 		{ "MetaMsg", "Note: These commands are only available in this guild." },
 	};
+
+	logSetSink(soup::make_unique<LogSink>());
 
 	g_ui.guild = g_meta->system_guild;
 
