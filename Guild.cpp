@@ -14,7 +14,9 @@ namespace MetaMsg
 	Channel* Guild::internal_addChannel(UniquePtr<Channel>&& channel)
 	{
 		Channel* chan = channels.emplace_back(std::move(channel)).get();
-		if (channels.size() == 1)
+		if (active_channel == nullptr
+			&& !chan->is_divider
+			)
 		{
 			active_channel = chan;
 		}
