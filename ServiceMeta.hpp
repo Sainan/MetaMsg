@@ -10,5 +10,7 @@ namespace MetaMsg
 		Channel* log_channel;
 
 		ServiceMeta();
+
+		void submitMessage(Guild*, Channel*, std::string&& message) final;
 	};
 }

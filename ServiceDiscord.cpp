@@ -1,5 +1,7 @@
 #include "ServiceDiscord.hpp"
 
+#include <soup/HttpRequest.hpp>
+#include <soup/HttpRequestTask.hpp>
 #include <soup/joaat.hpp>
 #include <soup/json.hpp>
 #include <soup/JsonArray.hpp>
@@ -121,28 +123,6 @@ namespace MetaMsg
 		}
 	};
 
-	/*struct DiscordInitGuildsTask : public Task
-	{
-		ServiceDiscord* serv;
-		DelayedCtor<HttpRequestTask> req;
-
-		DiscordInitGuildsTask(ServiceDiscord* serv)
-			: serv(serv)
-		{
-			HttpRequest hr("discord.com", "/api/v10/users/@me/guilds");
-			hr.header_fields.emplace("Authorization", serv->token);
-			req.construct(g_sched, std::move(hr));
-		}
-
-		void onTick() final
-		{
-			if (req->tickUntilDone())
-			{
-				setWorkDone();
-			}
-		}
-	};*/
-
 	ServiceDiscord::ServiceDiscord(std::string&& token)
 		: Service("DISCORD"), token(std::move(token))
 	{
@@ -156,6 +136,7 @@ namespace MetaMsg
 	void ServiceDiscord::processGuildCreate(const soup::JsonObject& guild)
 	{
 		DiscordGuild* g = (DiscordGuild*)addGuild(soup::make_unique<DiscordGuild>(
+			this,
 			guild.asObj().at("properties").asObj().at("name").asStr()
 		));
 		g->username = username;
@@ -167,6 +148,7 @@ namespace MetaMsg
 		{
 			DiscordChannel* c = (DiscordChannel*)g->addChannel(soup::make_unique<DiscordChannel>(
 				chan.asObj().at("name").asStr(),
+				chan.asObj().at("id").asStr(),
 				chan.asObj().at("type").asInt(),
 				chan.asObj().at("position").asInt()
 			));
@@ -177,7 +159,7 @@ namespace MetaMsg
 				c->parent = chan.asObj().at("parent_id").asStr();
 			}
 			g->snowflake_map.emplace(
-				chan.asObj().at("id").asStr(),
+				c->id,
 				c
 			);
 		}
@@ -236,5 +218,61 @@ namespace MetaMsg
 
 			return a.position < b.position;
 		});
+	}
+
+	void ServiceDiscord::submitMessage(Guild* g, Channel* chan, std::string&& message)
+	{
+		std::string path = "/api/v10/channels/";
+		path.append(static_cast<DiscordChannel*>(chan)->id);
+		path.append("/messages");
+
+		soup::JsonObject obj;
+		obj.add("content", std::move(message));
+
+		sendRequest("POST", std::move(path), obj);
+	}
+	
+	struct HttpRequestWrapperTask : public Task
+	{
+		const ServiceDiscord* serv;
+		HttpRequestTask hrt;
+
+		HttpRequestWrapperTask(const ServiceDiscord* serv, HttpRequest&& hr)
+			: Task(), serv(serv), hrt(g_sched, std::move(hr))
+		{
+		}
+
+		void onTick() final
+		{
+			if (hrt.tickUntilDone())
+			{
+				serv->log_channel->addMessage(Message{ "HTTP", hrt.res->body });
+				setWorkDone();
+			}
+		}
+	};
+
+	void ServiceDiscord::sendRequest(const char* method, std::string&& path, const soup::JsonObject& obj) const
+	{
+		HttpRequest hr(method, "discord.com", path);
+		hr.header_fields.emplace("Authorization", getAuthorizationValue());
+		
+		// Discord's Cloudflare rules seem to require this UA format if "Authorization: Bot ..." 
+		hr.header_fields.at("User-Agent") = "DiscordBot (Please momma no spaghetti)";
+
+		hr.header_fields.emplace("Content-Type", "application/json");
+		hr.setPayload(obj.encode());
+
+		g_sched.add<HttpRequestWrapperTask>(this, std::move(hr));
+	}
+
+	std::string ServiceDiscord::getAuthorizationValue() const
+	{
+		std::string val = token;
+		if (is_bot)
+		{
+			val.insert(0, "Bot ");
+		}
+		return val;
 	}
 }

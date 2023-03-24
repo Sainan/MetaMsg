@@ -6,7 +6,6 @@
 #include <soup/unicode.hpp>
 
 #include "common.hpp"
-#include "ServiceDiscord.hpp"
 
 namespace MetaMsg
 {
@@ -361,17 +360,10 @@ namespace MetaMsg
 				}
 				else if (c == soup::NEW_LINE)
 				{
-					if (g_ui.guild->active_channel->draft == U"/quit")
-					{
-						console.cleanup();
-						exit(0);
-					}
-					else if (g_ui.guild->active_channel->draft.substr(0, 9) == U"/discord ")
-					{
-						auto token = unicode::utf32_to_utf8(g_ui.guild->active_channel->draft.substr(9));
-						g_ui.guild->active_channel->draft.clear();
-						g_services.emplace_back(soup::make_unique<ServiceDiscord>(std::move(token)));
-					}
+					std::string msg = unicode::utf32_to_utf8(g_ui.guild->active_channel->draft);
+					g_ui.guild->active_channel->draft.clear();
+					g_ui.redrawDraft();
+					g_ui.guild->service->submitMessage(g_ui.guild, g_ui.guild->active_channel, std::move(msg));
 				}
 				else if (c == soup::BACKSPACE)
 				{

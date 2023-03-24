@@ -20,7 +20,11 @@ namespace MetaMsg
 		{
 		}
 
+		virtual ~Service() = default;
+
 		Guild* addGuild(UniquePtr<Guild>&& guild);
 		Guild* internal_addGuild(UniquePtr<Guild>&& guild);
+
+		virtual void submitMessage(Guild* g, Channel* chan, std::string&& message) = 0;
 	};
 }

@@ -20,5 +20,10 @@ namespace MetaMsg
 		ServiceDiscord(std::string&& token);
 
 		void processGuildCreate(const soup::JsonObject& guild);
+
+		void submitMessage(Guild* g, Channel* chan, std::string&& message) final;
+
+		void sendRequest(const char* method, std::string&& path, const soup::JsonObject& obj) const;
+		[[nodiscard]] std::string getAuthorizationValue() const;
 	};
 }

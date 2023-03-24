@@ -5,6 +5,7 @@
 
 #include <soup/UniquePtr.hpp>
 
+#include "fwd.hpp"
 #include "Channel.hpp"
 
 namespace MetaMsg
@@ -13,6 +14,7 @@ namespace MetaMsg
 
 	struct Guild
 	{
+		Service* const service;
 		const std::string name;
 		std::vector<UniquePtr<Channel>> channels{}; // do not manually modify
 
@@ -20,8 +22,8 @@ namespace MetaMsg
 		Channel* active_channel = nullptr;
 		std::string username = "User";
 
-		Guild(std::string name)
-			: name(std::move(name))
+		Guild(Service* service, std::string name)
+			: service(service), name(std::move(name))
 		{
 		}
 
