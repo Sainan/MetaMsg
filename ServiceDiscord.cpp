@@ -158,6 +158,7 @@ namespace MetaMsg
 		DiscordGuild* g = (DiscordGuild*)addGuild(soup::make_unique<DiscordGuild>(
 			guild.asObj().at("properties").asObj().at("name").asStr()
 		));
+		g->username = username;
 		snowflake_map.emplace(
 			guild.at("properties").asObj().at("id").asStr(),
 			g
