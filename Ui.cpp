@@ -151,6 +151,17 @@ namespace MetaMsg
 		console.setForegroundColour(0xCC, 0xCC, 0xCC);
 		console << "  ";
 		const auto max_draw_width = (width - 21 - 2 - msg.author.size());
+		if (xoff == -1)
+		{
+			if (msg.contents.size() > (max_draw_width - 1))
+			{
+				xoff = msg.contents.size() - (max_draw_width - 1);
+			}
+			else
+			{
+				xoff = 0;
+			}
+		}
 		if (msg.contents.size() > xoff)
 		{
 			console << msg.contents.substr(xoff, max_draw_width);
@@ -161,7 +172,7 @@ namespace MetaMsg
 	{
 		if (guild->active_channel)
 		{
-			drawMessage(Message{ guild->username, unicode::utf32_to_utf8(guild->active_channel->draft) }, 21, height - 1);
+			drawMessage(Message{ guild->username, unicode::utf32_to_utf8(guild->active_channel->draft) }, 21, height - 1, -1);
 		}
 	}
 
