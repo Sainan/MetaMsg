@@ -1,5 +1,6 @@
 #include "ServiceDiscord.hpp"
 
+#include <soup/joaat.hpp>
 #include <soup/json.hpp>
 #include <soup/JsonArray.hpp>
 #include <soup/JsonInt.hpp>
@@ -32,7 +33,8 @@ namespace MetaMsg
 			SOUP_ASSERT(root);
 			if (root->asObj().at("op").asInt() == 0)
 			{
-				if (root->asObj().at("t").asStr() == "READY")
+				auto type = joaat::hash(root->asObj().at("t").asStr());
+				if (type == joaat::hash("READY"))
 				{
 					serv->username = root->asObj().at("d").asObj().at("user").asObj().at("username").asStr();
 
@@ -120,7 +122,7 @@ namespace MetaMsg
 						});
 					}
 				}
-				else if (root->asObj().at("t").asStr() == "MESSAGE_CREATE")
+				else if (type == joaat::hash("MESSAGE_CREATE"))
 				{
 					Guild* g = serv->snowflake_map.at(root->asObj().at("d").asObj().at("guild_id").asStr());
 					Channel* chan = static_cast<DiscordGuild*>(g)->snowflake_map.at(root->asObj().at("d").asObj().at("channel_id").asStr());
