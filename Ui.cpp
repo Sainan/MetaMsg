@@ -22,6 +22,7 @@ namespace MetaMsg
 		{
 			drawGuildsView();
 		}
+		std::cout << std::flush;
 	}
 
 	bool Ui::isMessengerView() const noexcept
@@ -51,6 +52,8 @@ namespace MetaMsg
 		}
 
 		drawDraft();
+
+		std::cout << std::flush;
 	}
 
 	void Ui::drawMessengerView() const
