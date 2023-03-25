@@ -76,7 +76,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Soup</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Soup;../Pluto/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -85,7 +85,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;../Pluto/out/$(Configuration) $(Platform)/Pluto.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -96,7 +96,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Soup</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Soup;../Pluto/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -106,7 +106,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;../Pluto/out/$(Configuration) $(Platform)/Pluto.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -115,7 +115,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Soup</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Soup;../Pluto/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -124,7 +124,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;../Pluto/out/$(Configuration) $(Platform)/Pluto.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../Soup</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Soup;../Pluto/src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -145,13 +145,15 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>../Soup/bin/$(Configuration)DLL $(Platform)/Soup.lib;../Pluto/out/$(Configuration) $(Platform)/Pluto.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Channel.cpp" />
     <ClCompile Include="Guild.cpp" />
     <ClCompile Include="HttpRequestWrapperTask.cpp" />
+    <ClCompile Include="Plugin.cpp" />
+    <ClCompile Include="PluginMgr.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="ServiceDiscord.cpp" />
     <ClCompile Include="ServiceGuilded.cpp" />
@@ -167,7 +169,11 @@
     <ClInclude Include="fwd.hpp" />
     <ClInclude Include="Guild.hpp" />
     <ClInclude Include="HttpRequestWrapperTask.hpp" />
+    <ClInclude Include="lutil.hpp" />
+    <ClInclude Include="main.hpp" />
     <ClInclude Include="Message.hpp" />
+    <ClInclude Include="Plugin.hpp" />
+    <ClInclude Include="PluginMgr.hpp" />
     <ClInclude Include="ServiceDiscord.hpp" />
     <ClInclude Include="ServiceGuilded.hpp" />
     <ClInclude Include="ServiceMeta.hpp" />

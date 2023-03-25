@@ -6,6 +6,8 @@
 #include <soup/unicode.hpp>
 
 #include "common.hpp"
+#include "main.hpp"
+#include "PluginMgr.hpp"
 
 namespace MetaMsg
 {
@@ -212,9 +214,14 @@ namespace MetaMsg
 
 		void onTick() final
 		{
+			const bool initial = (g_ui.width == 0);
 			g_ui.width = width;
 			g_ui.height = height;
 			g_ui.draw();
+			if (initial)
+			{
+				onPostInitialDraw();
+			}
 			setWorkDone();
 		}
 	};
@@ -377,6 +384,7 @@ namespace MetaMsg
 					std::string msg = unicode::utf32_to_utf8(g_ui.guild->active_channel->draft);
 					g_ui.guild->active_channel->draft.clear();
 					g_ui.redrawDraft();
+					PluginMgr::onPreSendMessage(g_ui.guild, msg);
 					g_ui.guild->service->submitMessage(g_ui.guild, g_ui.guild->active_channel, std::move(msg));
 				}
 				else if (c == soup::BACKSPACE)

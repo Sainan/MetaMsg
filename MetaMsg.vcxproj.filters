@@ -25,6 +25,7 @@
     <ClCompile Include="ServiceGuilded.cpp">
       <Filter>services\guilded</Filter>
     </ClCompile>
+    <ClCompile Include="Plugin.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="time.hpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="ServiceGuilded.hpp">
       <Filter>services\guilded</Filter>
     </ClInclude>
+    <ClInclude Include="Plugin.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="services">

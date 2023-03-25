@@ -8,6 +8,7 @@
 #include <soup/Thread.hpp>
 
 #include "common.hpp"
+#include "PluginMgr.hpp"
 #include "ServiceMeta.hpp"
 #include "Ui.hpp"
 
@@ -86,4 +87,9 @@ int main()
 
 	g_sched.add<DummyTask>();
 	g_sched.run();
+}
+
+void onPostInitialDraw()
+{
+	PluginMgr::init();
 }

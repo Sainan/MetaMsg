@@ -1,0 +1,5 @@
+onPreSendMessage(function(e)
+	if e.guild.service.name ~= "METAMSG" then
+		e.message ..= " (Sent via MetaMsg)"
+	end
+end)
