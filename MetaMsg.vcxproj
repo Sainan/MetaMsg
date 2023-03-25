@@ -154,6 +154,7 @@
     <ClCompile Include="HttpRequestWrapperTask.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="ServiceDiscord.cpp" />
+    <ClCompile Include="ServiceGuilded.cpp" />
     <ClCompile Include="ServiceMeta.cpp" />
     <ClCompile Include="Ui.cpp" />
     <ClCompile Include="DiscordHeartbeatTask.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="HttpRequestWrapperTask.hpp" />
     <ClInclude Include="Message.hpp" />
     <ClInclude Include="ServiceDiscord.hpp" />
+    <ClInclude Include="ServiceGuilded.hpp" />
     <ClInclude Include="ServiceMeta.hpp" />
     <ClInclude Include="Ui.hpp" />
     <ClInclude Include="DiscordHeartbeatTask.hpp" />

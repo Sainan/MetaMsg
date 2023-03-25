@@ -22,6 +22,9 @@
       <Filter>services</Filter>
     </ClCompile>
     <ClCompile Include="HttpRequestWrapperTask.cpp" />
+    <ClCompile Include="ServiceGuilded.cpp">
+      <Filter>services\guilded</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="time.hpp" />
@@ -56,6 +59,9 @@
       <Filter>services\discord</Filter>
     </ClInclude>
     <ClInclude Include="HttpRequestWrapperTask.hpp" />
+    <ClInclude Include="ServiceGuilded.hpp">
+      <Filter>services\guilded</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="services">
@@ -66,6 +72,9 @@
     </Filter>
     <Filter Include="services\discord">
       <UniqueIdentifier>{c09514f2-cd0d-4aed-aa8c-f1b15ef59610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="services\guilded">
+      <UniqueIdentifier>{f4413976-d872-418a-9a01-7dad8812dd74}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

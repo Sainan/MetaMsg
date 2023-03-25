@@ -4,6 +4,7 @@
 
 #include "common.hpp"
 #include "ServiceDiscord.hpp"
+#include "ServiceGuilded.hpp"
 
 namespace MetaMsg
 {
@@ -24,6 +25,10 @@ namespace MetaMsg
 		else if (message.substr(0, 9) == "/discord ")
 		{
 			g_services.emplace_back(soup::make_unique<ServiceDiscord>(message.substr(9)));
+		}
+		else if (message.substr(0, 9) == "/guilded ")
+		{
+			g_services.emplace_back(soup::make_unique<ServiceGuilded>(message.substr(9)));
 		}
 	}
 }
