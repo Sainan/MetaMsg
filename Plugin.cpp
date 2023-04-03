@@ -49,13 +49,13 @@ namespace MetaMsg
 	{
 		lua_newtable(L);
 		{
-			lua_pushstring(L, message);
+			pluto_pushstring(L, message);
 			lua_setfield(L, -2, "message");
 		}
 		{
 			lua_newtable(L);
 			{
-				lua_pushstring(L, g->name);
+				pluto_pushstring(L, g->name);
 				lua_setfield(L, -2, "name");
 			}
 			{
