@@ -35,6 +35,9 @@ namespace MetaMsg
 					serv->username = root->asObj().at("d").asObj().at("user").asObj().at("username").asStr();
 					serv->is_bot = root->asObj().at("d").asObj().at("user").asObj().contains("bot");
 
+					serv->dm_guild = (DiscordGuild*)serv->addGuild(soup::make_unique<DiscordGuild>(serv, "Direct Messages"));
+					serv->dm_guild->username = serv->username;
+
 					for (const auto& guild : root->asObj().at("d").asObj().at("guilds").asArr())
 					{
 						if (!guild.asObj().contains("properties"))
@@ -49,10 +52,16 @@ namespace MetaMsg
 				{
 					serv->processGuildCreate(root->asObj().at("d").asObj());
 				}
+				else if (type == joaat::hash("CHANNEL_CREATE"))
+				{
+					auto g = serv->getGuild(root->asObj().at("d").asObj());
+					g->addChannel(root->asObj().at("d").asObj());
+					g->sortChannels();
+				}
 				else if (type == joaat::hash("MESSAGE_CREATE"))
 				{
-					Guild* g = serv->snowflake_map.at(root->asObj().at("d").asObj().at("guild_id").asStr());
-					Channel* chan = static_cast<DiscordGuild*>(g)->snowflake_map.at(root->asObj().at("d").asObj().at("channel_id").asStr());
+					auto g = serv->getGuild(root->asObj().at("d").asObj());
+					Channel* chan = g->snowflake_map.at(root->asObj().at("d").asObj().at("channel_id").asStr());
 					chan->addMessage(Message{
 						root->asObj().at("d").asObj().at("author").asObj().at("username").asStr(),
 						root->asObj().at("d").asObj().at("content").asStr()
@@ -122,8 +131,6 @@ namespace MetaMsg
 	{
 		log_channel = g_meta->system_guild->addChannel(soup::make_unique<Channel>("discord-log"));
 
-		//addGuild(soup::make_unique<Guild>("Direct Messages"));
-
 		g_sched.add<DiscordInitGatewayTask>(this);
 	}
 
@@ -140,78 +147,21 @@ namespace MetaMsg
 		);
 		for (const auto& chan : guild.at("channels").asArr())
 		{
-			DiscordChannel* c = (DiscordChannel*)g->addChannel(soup::make_unique<DiscordChannel>(
-				chan.asObj().at("name").asStr(),
-				chan.asObj().at("id").asStr(),
-				chan.asObj().at("type").asInt(),
-				chan.asObj().at("position").asInt()
-			));
-			if (chan.asObj().contains("parent_id")
-				&& chan.asObj().at("parent_id").isStr() // Sometimes it's null for some reason...
-				)
-			{
-				c->parent = chan.asObj().at("parent_id").asStr();
-			}
-			g->snowflake_map.emplace(
-				c->id,
-				c
-			);
+			g->addChannel(chan.asObj());
 		}
-		std::sort(g->channels.begin(), g->channels.end(), [g](const UniquePtr<Channel>& _a, const UniquePtr<Channel>& _b)
+		g->sortChannels();
+	}
+
+	DiscordGuild* ServiceDiscord::getGuild(const soup::JsonObject& obj)
+	{
+		if (obj.contains("guild_id"))
 		{
-			DiscordChannel& a = *static_cast<DiscordChannel*>(_a.get());
-			DiscordChannel& b = *static_cast<DiscordChannel*>(_b.get());
-
-			// Get parent positions
-			int a_parent_pos = -1;
-			int b_parent_pos = -1;
-			if (!a.parent.empty())
-			{
-				a_parent_pos = g->snowflake_map.at(a.parent)->position;
-			}
-			if (!b.parent.empty())
-			{
-				b_parent_pos = g->snowflake_map.at(b.parent)->position;
-			}
-
-			// Get group
-			int a_group = a_parent_pos;
-			int b_group = b_parent_pos;
-			if (a.type == 4)
-			{
-				a_group = a.position;
-			}
-			if (b.type == 4)
-			{
-				b_group = b.position;
-			}
-
-			// Compare group
-			if (a_group < b_group)
-			{
-				return true;
-			}
-			if (b_group < a_group)
-			{
-				return false;
-			}
-
-			// Demote voice channels
-			if (a.type != 2
-				&& b.type == 2
-				)
-			{
-				return true;
-			}
-			if (b.type != 2
-				&& a.type == 2
-				)
-			{
-				return false;
-			}
-
-			return a.position < b.position;
-		});
+			return snowflake_map.at(obj.at("guild_id").asStr());
+		}
+		else
+		{
+			return dm_guild;
+		}
 	}
 
 	void ServiceDiscord::submitMessage(Guild* g, Channel* chan, std::string&& message)

@@ -26,6 +26,8 @@
       <Filter>services\guilded</Filter>
     </ClCompile>
     <ClCompile Include="Plugin.cpp" />
+    <ClCompile Include="PluginMgr.cpp" />
+    <ClCompile Include="DiscordGuild.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="time.hpp" />
@@ -64,6 +66,9 @@
       <Filter>services\guilded</Filter>
     </ClInclude>
     <ClInclude Include="Plugin.hpp" />
+    <ClInclude Include="lutil.hpp" />
+    <ClInclude Include="main.hpp" />
+    <ClInclude Include="PluginMgr.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="services">

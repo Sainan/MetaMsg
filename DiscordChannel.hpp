@@ -8,11 +8,11 @@ namespace MetaMsg
 	{
 		std::string id;
 		int type;
-		int position;
+		int position = 0;
 		std::string parent;
 
-		DiscordChannel(std::string name, std::string id, int type, int position)
-			: Channel(std::move(name), type == 4), id(std::move(id)), type(type), position(position)
+		DiscordChannel(std::string name, std::string id, int type)
+			: Channel(std::move(name), type == 4), id(std::move(id)), type(type)
 		{
 		}
 	};

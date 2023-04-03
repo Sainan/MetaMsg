@@ -8,6 +8,8 @@
 
 namespace MetaMsg
 {
+	struct DiscordGuild;
+
 	struct ServiceDiscord : public Service
 	{
 		std::string token;
@@ -15,11 +17,13 @@ namespace MetaMsg
 		struct DiscordHeartbeatTask* heartbeater;
 		std::string username;
 		bool is_bot;
-		std::unordered_map<std::string, struct DiscordGuild*> snowflake_map;
+		DiscordGuild* dm_guild = nullptr;
+		std::unordered_map<std::string, DiscordGuild*> snowflake_map;
 
 		ServiceDiscord(std::string&& token);
 
 		void processGuildCreate(const soup::JsonObject& guild);
+		[[nodiscard]] DiscordGuild* getGuild(const soup::JsonObject& obj);
 
 		void submitMessage(Guild* g, Channel* chan, std::string&& message) final;
 

@@ -154,6 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Channel.cpp" />
+    <ClCompile Include="DiscordGuild.cpp" />
     <ClCompile Include="Guild.cpp" />
     <ClCompile Include="HttpRequestWrapperTask.cpp" />
     <ClCompile Include="Plugin.cpp" />
