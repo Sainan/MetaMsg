@@ -2,10 +2,6 @@
 
 #include <soup/joaat.hpp>
 #include <soup/json.hpp>
-#include <soup/JsonArray.hpp>
-#include <soup/JsonInt.hpp>
-#include <soup/JsonObject.hpp>
-#include <soup/JsonString.hpp>
 #include <soup/netConnectTask.hpp>
 #include <soup/WebSocketConnection.hpp>
 #include <soup/WebSocketMessage.hpp>

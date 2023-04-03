@@ -2,9 +2,6 @@
 
 #include <soup/HttpRequestTask.hpp>
 #include <soup/json.hpp>
-#include <soup/JsonArray.hpp>
-#include <soup/JsonObject.hpp>
-#include <soup/JsonString.hpp>
 #include <soup/StateMachineTask.hpp>
 
 #include "common.hpp"
