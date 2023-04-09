@@ -1,8 +1,10 @@
 #include "ServiceMeta.hpp"
 
 #include <soup/console.hpp>
+#include <soup/log.hpp>
 
 #include "common.hpp"
+#include "PluginMgr.hpp"
 #include "ServiceDiscord.hpp"
 #include "ServiceGuilded.hpp"
 
@@ -21,6 +23,12 @@ namespace MetaMsg
 		{
 			console.cleanup();
 			exit(0);
+		}
+		else if (message == "/reload")
+		{
+			PluginMgr::unloadPlugins();
+			PluginMgr::loadPlugins();
+			logWriteLine("Plugins reloaded");
 		}
 		else if (message.substr(0, 9) == "/discord ")
 		{

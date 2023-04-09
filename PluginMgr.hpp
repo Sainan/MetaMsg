@@ -15,6 +15,8 @@ namespace MetaMsg
 		inline static std::vector<UniquePtr<Plugin>> plugins{};
 
 		static void init();
+		static void loadPlugins();
+		static void unloadPlugins();
 
 		static void onPreSendMessage(Guild* g, std::string& message);
 	};

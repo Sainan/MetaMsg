@@ -10,6 +10,11 @@ namespace MetaMsg
 		{
 			std::filesystem::create_directory("plugins");
 		}
+		loadPlugins();
+	}
+
+	void PluginMgr::loadPlugins()
+	{
 		for (const auto& f : std::filesystem::directory_iterator("plugins"))
 		{
 			if (f.is_regular_file())
@@ -24,6 +29,15 @@ namespace MetaMsg
 				}
 			}
 		}
+	}
+
+	void PluginMgr::unloadPlugins()
+	{
+		for (const auto& p : plugins)
+		{
+			p->unload();
+		}
+		plugins.clear();
 	}
 
 	void PluginMgr::onPreSendMessage(Guild* g, std::string& message)
