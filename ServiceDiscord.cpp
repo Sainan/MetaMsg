@@ -180,7 +180,7 @@ namespace MetaMsg
 	{
 		HttpRequest hr(method, "discord.com", path);
 		hr.header_fields.emplace("Authorization", getAuthorizationValue());
-		
+
 		// Discord's Cloudflare rules seem to require this UA format if "Authorization: Bot ..." 
 		hr.header_fields.at("User-Agent") = "DiscordBot (Please momma no spaghetti)";
 
