@@ -6,7 +6,7 @@
 namespace MetaMsg
 {
 	HttpRequestWrapperTask::HttpRequestWrapperTask(Channel* log_channel, HttpRequest&& hr)
-		: Task(), log_channel(log_channel), hrt(g_sched, std::move(hr))
+		: Task(), log_channel(log_channel), hrt(std::move(hr))
 	{
 	}
 

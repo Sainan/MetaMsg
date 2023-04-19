@@ -26,7 +26,7 @@ namespace MetaMsg
 		{
 			HttpRequest hr(Uri("https://www.guilded.gg/api/me?isLogin=false&v2=true"));
 			hr.header_fields.emplace("Cookie", "hmac_signed_session=" + serv->token);
-			hrt.construct(g_sched, std::move(hr));
+			hrt.construct(std::move(hr));
 		}
 
 		void onTick() final
@@ -82,7 +82,7 @@ namespace MetaMsg
 					{
 						HttpRequest hr(Uri("https://www.guilded.gg/api/teams/" + pending_teams.front() + "/channels?excludeBadgedContent=true"));
 						hr.header_fields.emplace("Cookie", "hmac_signed_session=" + serv->token);
-						hrt.construct(g_sched, std::move(hr));
+						hrt.construct(std::move(hr));
 					}
 					else
 					{

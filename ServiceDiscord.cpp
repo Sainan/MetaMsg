@@ -82,7 +82,7 @@ namespace MetaMsg
 	struct DiscordInitGatewayTask : public Task
 	{
 		ServiceDiscord* serv;
-		netConnectTask connector{ g_sched, "gateway.discord.gg", 443 };
+		netConnectTask connector{ "gateway.discord.gg", 443 };
 
 		DiscordInitGatewayTask(ServiceDiscord* serv)
 			: serv(serv)
