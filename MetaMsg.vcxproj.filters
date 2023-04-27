@@ -27,7 +27,9 @@
     </ClCompile>
     <ClCompile Include="Plugin.cpp" />
     <ClCompile Include="PluginMgr.cpp" />
-    <ClCompile Include="DiscordGuild.cpp" />
+    <ClCompile Include="DiscordGuild.cpp">
+      <Filter>services\discord</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="time.hpp" />
