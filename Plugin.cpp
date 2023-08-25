@@ -56,6 +56,10 @@ namespace MetaMsg
 			lua_setfield(L, -2, "name");
 		}
 		{
+			pluto_pushstring(L, g.username);
+			lua_setfield(L, -2, "username");
+		}
+		{
 			lua_newtable(L);
 			{
 				lua_pushstring(L, g.service->name);
