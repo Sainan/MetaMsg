@@ -8,6 +8,7 @@
 #include <lualib.h>
 #include "lutil.hpp"
 
+#include "common.hpp"
 #include "Guild.hpp"
 #include "Service.hpp"
 
@@ -29,6 +30,9 @@ namespace MetaMsg
 
 			lua_getglobal(L, "log");
 			lua_setglobal(L, "print");
+
+			lua_pushcfunction(L, lua_submitMessage);
+			lua_setglobal(L, "submitMessage");
 
 			lua_pushcfunction(L, lua_onPreSendMessage);
 			lua_setglobal(L, "onPreSendMessage");
@@ -148,6 +152,31 @@ namespace MetaMsg
 	{
 		soup::logWriteLine(lua_tostring(L, 1));
 		return 0;
+	}
+
+	int Plugin::lua_submitMessage(lua_State* L)
+	{
+		const char* service_name = luaL_checkstring(L, 1);
+		const char* guild_name = luaL_checkstring(L, 2);
+		const char* channel_name = luaL_checkstring(L, 3);
+		const char* contents = luaL_checkstring(L, 4);
+
+		if (auto serv = findServiceByName(service_name))
+		{
+			if (auto g = serv->findGuildByName(guild_name))
+			{
+				if (auto chan = g->findChannelByName(channel_name))
+				{
+					serv->submitMessage(g, chan, contents);
+
+					lua_pushboolean(L, 1);
+					return 1;
+				}
+			}
+		}
+
+		lua_pushboolean(L, 0);
+		return 1;
 	}
 
 	int Plugin::lua_onPreSendMessage(lua_State* L)

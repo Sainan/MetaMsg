@@ -1,0 +1,8 @@
+onNewMessage(function(msg)
+	if msg.author == msg.guild.username then
+		return
+	end
+	if msg.contents == "hi" then
+		submitMessage(msg.guild.service.name, msg.guild.name, msg.channel.name, $"Hello there, {msg.author}!")
+	end
+end)

@@ -27,6 +27,18 @@ namespace MetaMsg
 		{
 		}
 
+		[[nodiscard]] Channel* findChannelByName(const std::string& name) const noexcept
+		{
+			for (const auto& chan : channels)
+			{
+				if (chan->name == name)
+				{
+					return chan.get();
+				}
+			}
+			return nullptr;
+		}
+
 		Channel* addChannel(UniquePtr<Channel>&& channel);
 		Channel* internal_addChannel(UniquePtr<Channel>&& channel);
 	};

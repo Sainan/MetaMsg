@@ -22,6 +22,18 @@ namespace MetaMsg
 
 		virtual ~Service() = default;
 
+		[[nodiscard]] Guild* findGuildByName(const std::string& name) const noexcept
+		{
+			for (const auto& guild : guilds)
+			{
+				if (guild->name == name)
+				{
+					return guild.get();
+				}
+			}
+			return nullptr;
+		}
+
 		Guild* addGuild(UniquePtr<Guild>&& guild);
 		Guild* internal_addGuild(UniquePtr<Guild>&& guild);
 
