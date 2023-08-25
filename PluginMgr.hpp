@@ -18,6 +18,7 @@ namespace MetaMsg
 		static void loadPlugins();
 		static void unloadPlugins();
 
-		static void onPreSendMessage(Guild* g, std::string& message);
+		static void onPreSendMessage(const Guild& g, std::string& message);
+		static void onNewMessage(const Guild& g, const Channel& chan, const Message& msg);
 	};
 }

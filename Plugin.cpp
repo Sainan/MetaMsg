@@ -32,6 +32,9 @@ namespace MetaMsg
 
 			lua_pushcfunction(L, lua_onPreSendMessage);
 			lua_setglobal(L, "onPreSendMessage");
+
+			lua_pushcfunction(L, lua_onNewMessage);
+			lua_setglobal(L, "onNewMessage");
 		}
 
 		// Run
@@ -45,7 +48,33 @@ namespace MetaMsg
 		L = nullptr;
 	}
 
-	void Plugin::onPreSendMessage(Guild* g, std::string& message)
+	void Plugin::push(lua_State* L, const Guild& g)
+	{
+		lua_newtable(L);
+		{
+			pluto_pushstring(L, g.name);
+			lua_setfield(L, -2, "name");
+		}
+		{
+			lua_newtable(L);
+			{
+				lua_pushstring(L, g.service->name);
+				lua_setfield(L, -2, "name");
+			}
+			lua_setfield(L, -2, "service");
+		}
+	}
+
+	void Plugin::push(lua_State* L, const Channel& chan)
+	{
+		lua_newtable(L);
+		{
+			pluto_pushstring(L, chan.name);
+			lua_setfield(L, -2, "name");
+		}
+	}
+
+	void Plugin::onPreSendMessage(const Guild& g, std::string& message)
 	{
 		lua_newtable(L);
 		{
@@ -53,19 +82,7 @@ namespace MetaMsg
 			lua_setfield(L, -2, "message");
 		}
 		{
-			lua_newtable(L);
-			{
-				pluto_pushstring(L, g->name);
-				lua_setfield(L, -2, "name");
-			}
-			{
-				lua_newtable(L);
-				{
-					lua_pushstring(L, g->service->name);
-					lua_setfield(L, -2, "name");
-				}
-				lua_setfield(L, -2, "service");
-			}
+			push(L, g);
 			lua_setfield(L, -2, "guild");
 		}
 		lua_setglobal(L, "argtmp");
@@ -89,6 +106,35 @@ namespace MetaMsg
 		lua_setglobal(L, "argtmp");
 	}
 
+	void Plugin::onNewMessage(const Guild& g, const Channel& chan, const Message& msg)
+	{
+		for (const auto& ref : on_new_message)
+		{
+			lutil::pushFunctionKey(L, ref);
+			lua_gettable(L, LUA_REGISTRYINDEX);
+
+			lua_newtable(L);
+			{
+				push(L, g);
+				lua_setfield(L, -2, "guild");
+			}
+			{
+				push(L, chan);
+				lua_setfield(L, -2, "channel");
+			}
+			{
+				pluto_pushstring(L, msg.author);
+				lua_setfield(L, -2, "author");
+			}
+			{
+				pluto_pushstring(L, msg.contents);
+				lua_setfield(L, -2, "contents");
+			}
+
+			lua_call(L, 1, 0);
+		}
+	}
+
 	Plugin* Plugin::self(lua_State* L)
 	{
 		return reinterpret_cast<Plugin*>(L->l_G->user_data);
@@ -103,6 +149,12 @@ namespace MetaMsg
 	int Plugin::lua_onPreSendMessage(lua_State* L)
 	{
 		self(L)->on_pre_send_message.emplace_back(lutil::checkFunction(L, 1));
+		return 0;
+	}
+
+	int Plugin::lua_onNewMessage(lua_State* L)
+	{
+		self(L)->on_new_message.emplace_back(lutil::checkFunction(L, 1));
 		return 0;
 	}
 }

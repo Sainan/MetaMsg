@@ -384,7 +384,7 @@ namespace MetaMsg
 					std::string msg = unicode::utf32_to_utf8(g_ui.guild->active_channel->draft);
 					g_ui.guild->active_channel->draft.clear();
 					g_ui.redrawDraft();
-					PluginMgr::onPreSendMessage(g_ui.guild, msg);
+					PluginMgr::onPreSendMessage(*g_ui.guild, msg);
 					g_ui.guild->service->submitMessage(g_ui.guild, g_ui.guild->active_channel, std::move(msg));
 				}
 				else if (c == soup::BACKSPACE)

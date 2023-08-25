@@ -40,11 +40,19 @@ namespace MetaMsg
 		plugins.clear();
 	}
 
-	void PluginMgr::onPreSendMessage(Guild* g, std::string& message)
+	void PluginMgr::onPreSendMessage(const Guild& g, std::string& message)
 	{
 		for (const auto& p : plugins)
 		{
 			p->onPreSendMessage(g, message);
+		}
+	}
+
+	void PluginMgr::onNewMessage(const Guild& g, const Channel& chan, const Message& msg)
+	{
+		for (const auto& p : plugins)
+		{
+			p->onNewMessage(g, chan, msg);
 		}
 	}
 }

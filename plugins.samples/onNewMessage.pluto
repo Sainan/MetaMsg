@@ -1,0 +1,3 @@
+onNewMessage(function(msg)
+	log($"new message: '{msg.contents}' in {msg.guild.name}, {msg.channel.name} by {msg.author}")
+end)

@@ -11,6 +11,7 @@
 #include "DiscordGuild.hpp"
 #include "DiscordHeartbeatTask.hpp"
 #include "HttpRequestWrapperTask.hpp"
+#include "PluginMgr.hpp"
 #include "ServiceMeta.hpp"
 
 namespace MetaMsg
@@ -62,10 +63,12 @@ namespace MetaMsg
 				{
 					auto g = serv->getGuild(root->asObj().at("d").asObj());
 					Channel* chan = g->snowflake_map.at(root->asObj().at("d").asObj().at("channel_id").asStr());
-					chan->addMessage(Message{
+					Message msg{
 						root->asObj().at("d").asObj().at("author").asObj().at("username").asStr(),
 						root->asObj().at("d").asObj().at("content").asStr()
-					});
+					};
+					PluginMgr::onNewMessage(*g, *chan, msg);
+					chan->addMessage(std::move(msg));
 				}
 			}
 			if (root->asObj().contains("s")
